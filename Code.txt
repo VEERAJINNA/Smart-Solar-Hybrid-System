@@ -1,0 +1,34 @@
+CODE:
+#include <Servo.h> 
+Servo myservo;
+#define LDR_1 A0  // First LDR sensor
+#define LDR_2 A1  // Second LDR sensor
+int pos = 90;    // Initial position of the servo
+int threshold = 50;  // Adjusted sensitivity threshold
+int stepSize = 2;    // Number of degrees to move per change
+void setup() {
+  myservo.attach(4);    // Servo connected to pin 4
+  pinMode(LDR_1, INPUT);
+  pinMode(LDR_2, INPUT)
+  delay(1000); // Startup delay
+}
+void loop() {
+  int value_1 = analogRead(LDR_1);   // Read the value from the first LDR                                               
+  int value_2 = analogRead(LDR_2);   // Read the value from the second LDR
+  // If the light difference is greater than the threshold, move the servo
+  if (abs(value_1 - value_2) > threshold) {
+    if (value_1 < value_2) {         // If LDR_1 gets more light, move towards it
+      pos += stepSize;
+    } 
+    else if (value_1 > value_2) {    // If LDR_2 gets more light, move towards it
+      pos -= stepSize;
+    }
+  }
+
+  // Ensure the position stays within the 0-180 degree range
+  pos = constrain(pos, 0, 180);
+
+  // Move the servo to the new position
+  myservo.write(pos); 
+  delay(100);  // Slightly longer delay for smooth movement
+}
